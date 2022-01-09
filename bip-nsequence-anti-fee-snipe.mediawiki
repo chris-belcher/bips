@@ -51,6 +51,13 @@ nSequence can only encode up to a max of 65535 for the block distance, see BIP68
 def apply_anti_fee_sniping_fields(transaction, rbf_set):
     # bip68 requires v=2
     transaction.version = 2
+    # Initialize all nsequence to indicate the requested RBF state
+    # nsequence can not be 2**32 - 1 in order for nlocktime to take effect
+    for input in transaction.inputs:
+        if rbf_set:
+            input.nsequence = 2**32 - 3
+        else:
+            input.nsequence = 2**32 - 2
     # always set nlocktime if any of the transaction inputs have more
     # confirmations than 65535 or are not taproot inputs
     # otherwise choose either nlocktime or nsequence with 50% probability
@@ -62,12 +69,8 @@ def apply_anti_fee_sniping_fields(transaction, rbf_set):
             transaction.nlocktime = max(0, transaction.nlocktime
             - randint(0, 99))
         # nsequence must be set in order for nlocktime to take effect
-        for input in transaction.inputs:
-            if rbf_set:
-                input.nsequence = 2**32 - 3
-            else:
-                input.nsequence = 2**32 - 2
     else:
+        transaction.nlocktime = 0
         input_index = randint(len(transaction.inputs))
         transaction.inputs[input_index].nsequence = transaction.inputs\
             [input_index].confirmations()
