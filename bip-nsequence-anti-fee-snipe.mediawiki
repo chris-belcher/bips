@@ -13,7 +13,7 @@
 
 == Abstract ==
 
-This document proposes a certain type of wallet behaviour which uses BIP341 taproot[1]. It provides a greater anonymity set for off-chain protocols which will make use of point-time-locked contracts (PTLCs) such as CoinSwap, Lightning and Discrete Log Contracts.
+This document proposes a certain type of wallet behaviour which uses [[bip-0341.mediawiki|BIP341 taproot]]. It provides a greater anonymity set for off-chain protocols which will make use of point-time-locked contracts (PTLCs) such as CoinSwap, Lightning and Discrete Log Contracts.
 
 == Motivation ==
 
@@ -29,7 +29,7 @@ This BIP proposes to improve the privacy and fungibility of off-chain protocols 
 
 Fee sniping is a hypothetical outcome of bad incentives to bitcoin mining in the low-inflation future. For a large miner the value of the transactions in the best block and the mempool can be exceeded by the cost of deliberately attempting to mine two blocks to orphan the best block. However with anti-fee-sniping protection using nLockTime or nSequence the bad miner will soon run out of transactions that can be put in the first block, which means they now need to go in the second. Anti-fee-sniping adds to the incentive to move the blockchain forward.
 
-The nLockTime field is being used this way today. It is implemented in Bitcoin Core[2] and Electrum[3], and adopted by approximately 20% of all recent transactions[4].
+The nLockTime field is being used this way today. It is implemented in Bitcoin Core <ref>[https://github.com/bitcoin/bitcoin/pull/2340]</ref> and Electrum <ref>https://github.com/spesmilo/electrum/blob/7e6d65ec11c0dccfc24478471c5951d3ae586937/electrum/wallet.py#L211-L224</ref>, and adopted by approximately 20% of all recent transactions <ref>https://txstats.com/dashboard/db/blocks-statistics?panelId=4&fullscreen&orgId=1</ref>.
 
 === Absolute vs relative locktime ===
 
@@ -43,7 +43,7 @@ When wallets create transactions spending UTXOs protected by BIP341 taproot, the
 
 Wallets should also have a second random branch which sets the nLockTime or nSequence value even further back, so that transactions that are delayed after signing for whatever reason (e.g. high-latency mix networks) have better privacy. Existing behaviour is that with a probability of 10%, choose a random number between 0 and 99, and subtract it from the current block height. See the Bitcoin Core and Electrum source codes linked in the references for an example.
 
-nSequence can only encode up to a max of 65535 for the block distance, see BIP68[5], so if the UTXOs being spent have more confirmations than that then the wallet should use nLockTime instead.
+nSequence can only encode up to a max of 65535 for the block distance, see [[bip-0068.mediawiki|BIP68]], so if the UTXOs being spent have more confirmations than that then the wallet should use nLockTime instead.
 
 === Pseudocode ===
 
@@ -84,9 +84,9 @@ All wallet software already keeps track of how many confirmations its UTXOs have
 
 == Acknowledgements ==
 
-Originally suggested by David Harding[6] and mentioned to me by ZmnSCPxj.
+Originally suggested by David Harding <ref>https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002412.html</ref> and mentioned to me by ZmnSCPxj.
 
-Thanks to craigraw for suggesting a new value for input nsequence in the absolute locktime case[7].
+Thanks to craigraw for suggesting a new value for input nsequence in the absolute locktime case <ref>https://github.com/sparrowwallet/sparrow/issues/161#issuecomment-925003231</ref>.
 
 == Copyright ==
 
@@ -94,19 +94,4 @@ This document is placed in the public domain.
 
 == References ==
 
-[1] https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki
-
-[2] https://github.com/bitcoin/bitcoin/pull/2340
-
-[3]
-https://github.com/spesmilo/electrum/blob/7e6d65ec11c0dccfc24478471c5951d3ae586937/electrum/wallet.py#L211-L224
-
-[4]
-https://txstats.com/dashboard/db/blocks-statistics?panelId=4&fullscreen&orgId=1
-
-[5] https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki
-
-[6]
-https://lists.linuxfoundation.org/pipermail/lightning-dev/2020-January/002412.html
-
-[7] https://github.com/sparrowwallet/sparrow/issues/161#issuecomment-925003231
+<references>
